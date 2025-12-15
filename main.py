@@ -8,8 +8,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 
 def main():
     # 1. Load Data
-    churn_tr, app_tr, web_tr, claims_tr = load_dataset("./data/train/")
-    churn_te, app_te, web_te, claims_te = load_dataset("./data/test/", test=True)
+    churn_tr, app_tr, web_tr, claims_tr = load_dataset(f"{PROJECT_ROOT}/data/train/")
+    churn_te, app_te, web_te, claims_te = load_dataset(f"{PROJECT_ROOT}/data/test/", test=True)
     
     # 2. Feature Engineering
     df_train, risk_titles = build_features(churn_tr, app_tr, web_tr, claims_tr)
@@ -17,7 +17,8 @@ def main():
     df_test = align_test_cols(df_train, df_test)
     
     # Prepare Arrays
-    feature_cols = [c for c in df_train.columns if c not in ['member_id', 'churn', 'outreach', 'signup_date']]
+    # feature_cols = [c for c in df_train.columns if c not in ['member_id', 'churn', 'outreach', 'signup_date']]
+    feature_cols = [c for c in df_train.columns if c not in ['member_id', 'churn', 'signup_date', 'outreach', 'tenure_days', 'total_web_visits', 'total_risk_visits', 'total_health_visits'	'days_since_last_web', 'days_since_last_claim']]
     treatment_col = 'outreach'
     target_col = 'churn'
     
