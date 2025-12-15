@@ -42,9 +42,10 @@ python main.py
 This will:
 1.  Load and process the training and test data from the `data/` directory.
 2.  Train the uplift model.
-3.  Generate a figure plot `optimal_n.png` in the output directory, to determine optimal n. 
-4.  Generate a file named `outreach_list.csv` in the output directory, containing the prioritized list of members for the outreach campaign. The list includes `member_id`, `prioritization_score`, and `rank`. 
+3.  Generate a figure plot `optimal_n.png` in the `output` directory, to determine optimal n. 
+4.  Generate a file named `outreach_list.csv` in the `output` directory, containing the prioritized list of members for the outreach campaign. The list includes `member_id`, `prioritization_score`, and `rank`. 
 
+My produced results are available at `output_reference`.
 
 ## Approach & Methodology
 ### Feature Engineering
