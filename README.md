@@ -59,6 +59,8 @@ Leisure/Risk Titles (e.g., "Game Reviews", "Match Highlights") had positive corr
 ### Causal Inference Modeling (Uplift)
 We formulated this as a Causal Inference problem to estimate the Conditional Average Treatment Effect (CATE) of outreach.
 
+**Handling Data Imbalance**: The dataset is highly unbalanced, with approximately 80% of members not churning and 20% churning. To prevent the model from developing a "lazy" solution (i.e., classifying all members as non-churners), we scaled the sample weights during model training. This ensures that the minority class (churners) is given appropriate importance.
+
 **Why not S-Learner (Single Model)?**
 
 Initial experimentation with an S-Learner (where outreach is a feature) yielded poor ranking performance. Because "Base Churn Risk" (e.g., medical history) is a much stronger signal than the "Outreach" signal, the S-Learner treated the intervention as noise.
