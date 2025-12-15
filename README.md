@@ -191,7 +191,7 @@ To evaluate the model and compare to the baseline using standard metrics as clas
 
 ---
 
-#### Classification Report — Our Model
+#### Classification Report - Our Model
 
 | Class     | Precision | Recall | F1-score | Support |
 |-----------|-----------|--------|----------|---------|
@@ -203,7 +203,7 @@ To evaluate the model and compare to the baseline using standard metrics as clas
 
 ---
 
-#### Classification Report — Baseline
+#### Classification Report - Baseline
 
 | Class     | Precision | Recall | F1-score | Support |
 |-----------|-----------|--------|----------|---------|
