@@ -6,6 +6,9 @@ from sklearn.base import clone
 from xgboost import XGBClassifier
 import warnings
 warnings.filterwarnings('ignore')
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 def _get_base_estimator(random_state=42, scale_weight=1.0):
     """Helper to create a base XGBoost estimator."""
@@ -146,7 +149,7 @@ def determine_optimal_threshold(oof_uplift, y_churn, t):
     plt.grid(True, alpha=0.3)
 
     # plt.show()
-    plt.savefig("../output/optimal_n.png")
+    plt.savefig(f"{PROJECT_ROOT}/optimal_n.png")
     
     return optimal_pct
 

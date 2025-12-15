@@ -2,6 +2,9 @@ from src.data_loader import load_dataset
 from src.evaluation import align_test_cols, evaluate_test_performance
 from src.features import build_features
 from src.model import get_trained_model
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent
 
 def main():
     # 1. Load Data
@@ -35,7 +38,7 @@ def main():
     outreach = results_top_n.head(final_n).copy()
     outreach['rank'] = range(1, len(outreach)+1)
     
-    outreach.to_csv("./output/outreach_list.csv", index=False)
+    outreach.to_csv(f"{PROJECT_ROOT}/outreach_list.csv", index=False)
     print("Success.")
 
 if __name__ == "__main__":
