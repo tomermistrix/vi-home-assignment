@@ -109,5 +109,16 @@ def build_features(df_churn, df_app, df_web, df_claims, input_risk_titles=None):
     master_df['sessions_per_day'] = master_df['total_sessions'] / (master_df['tenure_days'] + 1)
     master_df['risk_ratio'] = master_df['total_risk_visits'] / (master_df['total_web_visits'] + 1)
 
+    # Remove non-robust features
+    to_drop = [
+        'tenure_days',
+        'total_web_visits',
+        'total_risk_visits',
+        'total_health_visits',
+        'days_since_last_web',
+        'days_since_last_claim'
+    ]
+    master_df = master_df.drop(columns=to_drop, errors='ignore')
+
     # IMPORTANT: Return BOTH the dataframe AND the learned list
     return master_df, risk_titles
