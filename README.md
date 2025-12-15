@@ -76,7 +76,7 @@ This forced the system to explicitly model the difference in outcomes, successfu
 Since the outreach cost is marginal, we avoided hard ROI calculations and optimized for Algorithmic Efficiency.
 We performed Out-of-Fold (OOF) Analysis on the training set to simulate unseen data.
 We plotted the Net Churn Reduction Curve and selected the cutoff point where the marginal gain of targeting additional users diminished significantly compared to random selection.
-This validated a strategy of targeting the Top 60% of the population, maximizing total churn reduction without wasting resources on users with zero or negative treatment effects.
+This validated a strategy of targeting the Top 65% of the population, maximizing total churn reduction without wasting resources on users with zero or negative treatment effects.
 
 
 ### Test Evaluation and Comparison to Baseline
