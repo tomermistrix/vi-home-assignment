@@ -3,8 +3,11 @@ from src.evaluation import align_test_cols, evaluate_test_performance
 from src.features import build_features
 from src.model import get_trained_model
 from pathlib import Path
+import os
 
 PROJECT_ROOT = Path(__file__).resolve().parent
+OUTPUT_PATH = f"{PROJECT_ROOT}/output"
+os.makedirs(OUTPUT_PATH, exist_ok=True)
 
 def main():
     # 1. Load Data
