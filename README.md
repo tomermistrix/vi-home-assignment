@@ -83,15 +83,15 @@ We employed a T-Learner architecture, training two separate XGBoost classifiers:
 - **Uplift Score**: $P(\text{Stay} | \text{Treated}) - P(\text{Stay} | \text{Control})$.
 This forced the system to explicitly model the difference in outcomes, successfully identifying "Persuadables" (High Uplift) vs. "Sleeping Dogs" (Negative Uplift). Members are ranked for prioritized outreach based on the uplift score.
 
-**Optimal number of users (Determining n)**:
+### Optimal number of users (Determining n)
 
 We determined the optimal outreach size not just by cost, but also by **Customer Sentiment Risk**.
 - **Beyond Cost:** Since outreach costs are marginal, a purely cost-driven model would suggest targeting nearly everyone. However, this ignores the "Sleeping Dog" effect-users who churn because they were contacted.
 - **The Strategy:** We optimized for **Total Net Churn Reduction**. By plotting the cumulative "Members Saved" curve on Out-of-Fold (OOF) predictions, we identified the inflection point (65%) where the strategy shifts from value-generating to value-destroying.
 - **Result:** This cutoff maximizes the volume of saved customers while explicitly filtering out the bottom 35%, where outreach was proven to have a negative impact.
 
-### Analysis of Outreach List and Optimal n:
-#### Top 15 Users to Contact (Highest Uplift)
+## Analysis of Outreach List and Optimal n:
+### Top 15 Users to Contact (Highest Uplift)
 
 These are the users with the highest predicted uplift scores - the ones most likely to benefit from outreach.
 
@@ -119,7 +119,7 @@ Among the top 15 users to contact, the **only users who actually churned (user I
 
 ---
 
-#### Top 15 Sleeping Dogs (Negative Uplift)
+### Top 15 Sleeping Dogs (Negative Uplift)
 
 These are users for whom outreach may **increase churn risk**.
 
@@ -147,7 +147,7 @@ Among the sleeping dogs, the **users who actually churned (6623, 8461, 4773) wer
 
 ---
 
-#### Top K Uplift Evaluation
+### Top K Uplift Evaluation
 
 | Top % | n Users | Actual Lift | Control Churn | Treated Churn |
 |-------|---------|------------|---------------|---------------|
@@ -173,7 +173,7 @@ Among the sleeping dogs, the **users who actually churned (6623, 8461, 4773) wer
 
 ---
 
-#### Summary Insights
+### Summary Insights
 
 1. **High Uplift Users:** Targeting these users is effective; the few actual churners were not contacted, showing the model identifies who truly benefits.  
 2. **Sleeping Dogs:** Outreach to these users may be counterproductive, as evidenced by the churned users being outreached.  
