@@ -68,9 +68,9 @@ Initial experimentation with an S-Learner (where outreach is a feature) yielded 
 **Solution: T-Learner (Two-Model Approach)**
 
 We employed a T-Learner architecture, training two separate XGBoost classifiers:
-**Model Control**: Learns natural churn behavior for ignored members.
-**Model Treated**: Learns churn behavior for contacted members.
-**Uplift Score**: $P(\text{Stay} | \text{Treated}) - P(\text{Stay} | \text{Control})$.
+- **Model Control**: Learns natural churn behavior for ignored members.
+- **Model Treated**: Learns churn behavior for contacted members.
+- **Uplift Score**: $P(\text{Stay} | \text{Treated}) - P(\text{Stay} | \text{Control})$.
 This forced the system to explicitly model the difference in outcomes, successfully identifying "Persuadables" (High Uplift) vs. "Sleeping Dogs" (Negative Uplift).
 
 **Optimization (Determining 'n')**:
