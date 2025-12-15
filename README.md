@@ -49,12 +49,22 @@ My produced results are available at `output_reference`.
 
 ## Approach & Methodology
 ### Feature Engineering
-Our feature strategy focused on behavioral intensity and user intent rather than raw transactional volume.
-1. **Aggregations over Sparsity**: We initially explored using specific ICD codes and Web Titles as features. However, analysis showed these were too sparse for the test set size, leading to overfitting. We replaced specific counts with robust aggregates (e.g., total_claims, total_sessions) and recency metrics (e.g., days_since_last_session).
-2. **Intent Clustering (Web Visits)**: We discovered a strong semantic split in web activity.
-Health-Related Titles (e.g., "Diabetes Management") had negative correlations with churn (Engagement signal).
-Leisure/Risk Titles (e.g., "Game Reviews", "Match Highlights") had positive correlations with churn (Disengagement/Risk signal). Instead of using ~25 individual titles, we engineered two high-signal features: total_health_visits and total_risk_visits. This captured user intent while reducing dimensionality.
-3. **Intensity Ratios**: We normalized counts by tenure (e.g., claims_per_day) to distinguish between long-term low-usage users and new high-intensity users.
+Our feature strategy prioritized **behavioral intensity** and **current user intent** over historical accumulation. Since Uplift models can easily overfit to strong "Base Risk" signals (like Tenure), we rigorously curated the feature set to focus on responsiveness.
+1. **Addressing Data Quality: Aggregation over Sparsity**
+
+    Raw transactional data (e.g., specific ICD-10 codes or 25+ unique web titles) proved too sparse for the dataset size, leading to high variance in the test set.
+    - **Action:** We replaced specific counts with robust aggregates. For example, rather than tracking 10 different diagnosis codes, we calculated `total_claims` and `unique_diagnoses`.
+2. **Domain Relevance: Intent Clustering**
+
+   We analyzed the semantic meaning of web visits to distinguish between "Engagement" and "Disengagement."
+   - **Health-Related Titles** (e.g., Diabetes Management) correlated with retention.
+   - **Leisure/Risk Titles** (e.g., Game Reviews, Match Highlights) correlated with churn.
+   - **Action:** We aggregated these into `risk_ratio` features, capturing the proportion of a user's activity that is high-risk, rather than just the raw volume.
+3. **Predictive Power: Prioritizing Intensity (Ratios vs. Totals)**
+
+   During model evaluation, we observed that raw cumulative features (e.g., `tenure_days`, `total_web_visits`) biased the model towards "Loyalty" rather than "Persuadability." A user with 100 visits over 5 years is very different from a user with 100 visits in 1 month.
+    - **Action:** We removed raw cumulative totals (including `tenure_days` and `total_visits`) and replaced them with Intensity Ratios (e.g., `claims_per_day`, `sessions_per_day`).
+    - **Why:** This forces the T-Learner to focus on the user's current state of need and interaction velocity, which are stronger predictors of whether they will respond to an immediate outreach intervention.
 
 ### Causal Inference Modeling (Uplift)
 We formulated this as a Causal Inference problem to estimate the Conditional Average Treatment Effect (CATE) of outreach.
