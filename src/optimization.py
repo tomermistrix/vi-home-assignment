@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.base import clone
 from xgboost import XGBClassifier
+import warnings
+warnings.filterwarnings('ignore')
 
 def _get_base_estimator(random_state=42, scale_weight=1.0):
     """Helper to create a base XGBoost estimator."""
