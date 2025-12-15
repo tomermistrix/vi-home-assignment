@@ -81,20 +81,19 @@ We employed a T-Learner architecture, training two separate XGBoost classifiers:
 - **Model Control**: Learns natural churn behavior for ignored members.
 - **Model Treated**: Learns churn behavior for contacted members.
 - **Uplift Score**: $P(\text{Stay} | \text{Treated}) - P(\text{Stay} | \text{Control})$.
-This forced the system to explicitly model the difference in outcomes, successfully identifying "Persuadables" (High Uplift) vs. "Sleeping Dogs" (Negative Uplift).
+This forced the system to explicitly model the difference in outcomes, successfully identifying "Persuadables" (High Uplift) vs. "Sleeping Dogs" (Negative Uplift). Members are ranked for prioritized outreach based on the uplift score.
 
-**Optimization (Determining 'n')**:
+**Optimal number of users (Determining n)**:
 
-Since the outreach cost is marginal, we avoided hard ROI calculations and optimized for Algorithmic Efficiency.
-We performed Out-of-Fold (OOF) Analysis on the training set to simulate unseen data.
-We plotted the Net Churn Reduction Curve and selected the cutoff point where the marginal gain of targeting additional users diminished significantly compared to random selection.
-This validated a strategy of targeting the Top 65% of the population, maximizing total churn reduction without wasting resources on users with zero or negative treatment effects.
-
+We determined the optimal outreach size not just by cost, but also by **Customer Sentiment Risk**.
+- **Beyond Cost:** Since outreach costs are marginal, a purely cost-driven model would suggest targeting nearly everyone. However, this ignores the "Sleeping Dog" effect-users who churn because they were contacted.
+- **The Strategy:** We optimized for **Total Net Churn Reduction**. By plotting the cumulative "Members Saved" curve on Out-of-Fold (OOF) predictions, we identified the inflection point (65%) where the strategy shifts from value-generating to value-destroying.
+- **Result:** This cutoff maximizes the volume of saved customers while explicitly filtering out the bottom 35%, where outreach was proven to have a negative impact.
 
 ### Analysis of Outreach List and Optimal n:
 #### Top 15 Users to Contact (Highest Uplift)
 
-These are the users with the highest predicted uplift scores — the ones most likely to benefit from outreach.
+These are the users with the highest predicted uplift scores - the ones most likely to benefit from outreach.
 
 | User ID | Outreach | Prob. Churn if Ignored | Prob. Churn if Treated | Uplift Score | Actual Churn |
 |---------|----------|-----------------------|-----------------------|--------------|--------------|
@@ -185,7 +184,7 @@ To evaluate the model and compare to the baseline using standard metrics as clas
 1. If the member was outreached, we predict the churn probability using **Model Treated**.
 2. If the member was not outreached, we predict the churn probability using **Model Control**.
 
-#### ROC–AUC Comparison
+#### ROC-AUC Comparison
 - **Test Set AUC (Our Model):** 0.6602  
 - **Test Set AUC (Baseline):** 0.4891  
 - **AUC Improvement:** **+0.1711**
@@ -217,6 +216,6 @@ To evaluate the model and compare to the baseline using standard metrics as clas
 ---
 
 #### Summary
-- Our model significantly outperforms the baseline in **ROC–AUC (+0.17)**.
+- Our model significantly outperforms the baseline in **ROC-AUC (+0.17)**.
 - It improves **recall for the churn class** (0.61 vs. 0.48), capturing more churners.
 - Overall accuracy increases from **50% → 62%**, indicating meaningful predictive gains.
