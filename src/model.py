@@ -10,7 +10,7 @@ def get_trained_model(df, feature_cols, treatment_col, target_col, param_grid=No
     """
     print("=== Starting End-to-End Uplift Pipeline (T-Learner) ===")
 
-    # 0. Prepare Data Arrays
+    # Prepare Data Arrays
     X = df[feature_cols].values
     t = df[treatment_col].values
     y_churn = df[target_col].values

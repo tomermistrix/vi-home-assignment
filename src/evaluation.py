@@ -3,6 +3,8 @@ from sklearn.metrics import roc_auc_score, classification_report
 import numpy as np
 
 
+BASELINE_PATH = "data/baseline/"
+
 def align_test_cols(train_df, test_df):
     """
     Ensures Test DF has exactly the same features as Train DF.
@@ -107,10 +109,23 @@ def evaluate_test_performance(model, df_test, feature_cols, treatment_col, targe
 
     auc = roc_auc_score(y_true, prob_churn_actual)
     print(f"Test Set AUC: {auc:.4f}")
-    print("(Compare this value to 'auc_baseline_test.txt')")
 
-    print("\n--- Classification Report ---")
-    print(classification_report(y_true, (prob_churn_actual > 0.5).astype(int)))
+    # BASELINE COMPARISON
+    with open(f"{BASELINE_PATH}auc_baseline_test.txt", 'r') as f:
+        baseline_auc_text = f.read()
+        baseline_auc = float(baseline_auc_text.split('=')[-1])
+    
+    print(f"Baseline Test Set AUC: {baseline_auc:.4f}")
+    print(f"AUC Difference (Our Model - Baseline): {auc - baseline_auc:+.4f}")
+
+
+    print("\n--- Classification Report (Our Model) ---")
+    print(classification_report(y_true, (prob_churn_actual > 0.5).astype(int), target_names=['no_churn', 'churn']))
+
+    print("\n--- Classification Report (Baseline) ---")
+    with open(f"{BASELINE_PATH}classification_report_baseline_test.txt", 'r') as f:
+        print(f.read())
+
 
     # --- STEP 3: PREPARE DATAFRAME FOR VISUALIZER ---
     results_df = df_test.copy()

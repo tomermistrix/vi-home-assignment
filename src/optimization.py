@@ -143,7 +143,8 @@ def determine_optimal_threshold(oof_uplift, y_churn, t):
     plt.ylabel("Est. Net Members Saved")
     plt.grid(True, alpha=0.3)
 
-    plt.show()
+    # plt.show()
+    plt.savefig("output/optimal_n.png")
     
     return optimal_pct
 
