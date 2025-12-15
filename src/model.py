@@ -27,15 +27,19 @@ def get_trained_model(df, feature_cols, treatment_col, target_col, param_grid=No
       }
 
     # Step 1: Tune
+    print("step 1")
     best_c, best_t = tune_hyperparameters(X, y_ret, t, param_grid, random_state)
 
-    # Step 2: OOF Scores
+    # Step 2: OOF Scores for determining n
+    print("step 2")
     oof_scores = generate_oof_scores(X, y_ret, t, best_c, best_t, random_state)
 
-    # Step 3: Optimization
+    # Step 3: Determining n
+    print("step 3")
     optimal_pct = determine_optimal_threshold(oof_scores, y_churn, t)
 
-    # Step 4: Final Training
+    # Step 4: Final Training on all train set
+    print("step 4")
     final_model_tuple = retrain_final_models(X, y_ret, t, best_c, best_t)
 
     return final_model_tuple, optimal_pct
