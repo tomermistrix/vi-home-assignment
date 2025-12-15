@@ -1,8 +1,10 @@
 import numpy as np
 import pandas as pd
+from matplotlib.ticker import PercentFormatter
 import matplotlib.pyplot as plt
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.base import clone
+import seaborn as sns
 from xgboost import XGBClassifier
 import warnings
 warnings.filterwarnings('ignore')
@@ -140,16 +142,48 @@ def determine_optimal_threshold(oof_uplift, y_churn, t):
     print(f"(Est. {max_saved:.1f} members saved in training set)")
 
     # Plot the Optimization Curve
-    plt.figure(figsize=(8, 4))
-    plt.plot(x_axis, net_impacts, marker='o', color='green')
-    plt.axvline(optimal_pct, color='red', linestyle='--')
-    plt.title(f"Net Churn Reduction Curve (Optimal = {optimal_pct:.0%})")
-    plt.xlabel("% Population Targeted")
-    plt.ylabel("Est. Net Members Saved")
-    plt.grid(True, alpha=0.3)
-
+    plt.figure(figsize=(10, 5))
+    sns.set_style("whitegrid")
+    # 1. The Line
+    plt.plot(x_axis, net_impacts, color='#2c3e50', linewidth=2.5, zorder=2)
+    
+    # 2. The "Value Area" (Green Zone up to Optimal)
+    plt.fill_between(x_axis, 0, net_impacts, 
+                     where=(np.array(x_axis) <= optimal_pct + 0.01), 
+                     color='#27ae60', alpha=0.3, label='Net Value Created')
+    
+    # 3. The "Waste Area" (Grey Zone after Optimal)
+    plt.fill_between(x_axis, 0, net_impacts, 
+                     where=(np.array(x_axis) >= optimal_pct), 
+                     color='#95a5a6', alpha=0.2, label='Diminishing Returns')
+    
+    # 4. The Peak Marker & Line
+    plt.axvline(optimal_pct, color='#c0392b', linestyle='--', linewidth=2)
+    plt.scatter([optimal_pct], [max_saved], color='#c0392b', s=100, zorder=3, edgecolors='white', linewidth=2)
+    
+    # 5. Annotations
+    plt.text(optimal_pct, max_saved + (max(net_impacts)*0.05), 
+             f"Optimal Cutoff: {optimal_pct:.0%}\n(Max Net Members Saved)", 
+             ha='center', fontweight='bold', color='#c0392b')
+    
+    plt.text(optimal_pct/2, max(net_impacts)/2, 
+             "Profitability Zone\n(Outreach > Churn Risk)", 
+             ha='center', color='#1e8449', fontweight='bold')
+    
+    # Formatting
+    plt.title("Optimization Model: Maximizing Total Net Members Saved", fontsize=14, fontweight='bold')
+    plt.xlabel("% of Population Targeted", fontsize=12)
+    plt.ylabel("Est. Net Members Saved (OOF)", fontsize=12)
+    
+    # Format axes as percentages
+    
+    plt.gca().xaxis.set_major_formatter(PercentFormatter(1.0))
+    
+    plt.ylim(0, max(net_impacts)*1.2)
+    plt.legend(loc='upper right')
     # plt.show()
-    plt.savefig(f"{PROJECT_ROOT}/output/optimal_n.png")
+    plt.savefig(f"{PROJECT_ROOT}/output/optimal_n.png", dpi=300)
+
     
     return optimal_pct
 
