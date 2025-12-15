@@ -42,7 +42,8 @@ python main.py
 This will:
 1.  Load and process the training and test data from the `data/` directory.
 2.  Train the uplift model.
-3.  Generate a file named `outreach_list.csv` in the root directory, containing the prioritized list of members for the outreach campaign. The list includes `member_id`, `prioritization_score`, and `rank`.
+3.  Generate a figure plot `optimal_n.png` in the output directory, to determine optimal n. 
+4.  Generate a file named `outreach_list.csv` in the output directory, containing the prioritized list of members for the outreach campaign. The list includes `member_id`, `prioritization_score`, and `rank`. 
 
 
 ## Approach & Methodology
@@ -58,9 +59,10 @@ Leisure/Risk Titles (e.g., "Game Reviews", "Match Highlights") had positive corr
 We formulated this as a Causal Inference problem to estimate the Conditional Average Treatment Effect (CATE) of outreach.
 
 **Why not S-Learner (Single Model)?**
-Initial experimentation with an S-Learner (where outreach is a feature) yielded poor ranking performance. Because "Base Churn Risk" (e.g., medical history) is a much stronger signal than the "Outreach" signal, the S-Learner treated the intervention as noise, resulting in a flat Qini curve.
 
-**Solution**: T-Learner (Two-Model Approach)
+Initial experimentation with an S-Learner (where outreach is a feature) yielded poor ranking performance. Because "Base Churn Risk" (e.g., medical history) is a much stronger signal than the "Outreach" signal, the S-Learner treated the intervention as noise.
+
+**Solution: T-Learner (Two-Model Approach)**
 
 We employed a T-Learner architecture, training two separate XGBoost classifiers:
 **Model Control**: Learns natural churn behavior for ignored members.
@@ -68,8 +70,52 @@ We employed a T-Learner architecture, training two separate XGBoost classifiers:
 **Uplift Score**: $P(\text{Stay} | \text{Treated}) - P(\text{Stay} | \text{Control})$.
 This forced the system to explicitly model the difference in outcomes, successfully identifying "Persuadables" (High Uplift) vs. "Sleeping Dogs" (Negative Uplift).
 
-**Optimization (Determining 'n')**: Since the outreach cost is marginal, we avoided hard ROI calculations and optimized for Algorithmic Efficiency.
+**Optimization (Determining 'n')**:
 
+Since the outreach cost is marginal, we avoided hard ROI calculations and optimized for Algorithmic Efficiency.
 We performed Out-of-Fold (OOF) Analysis on the training set to simulate unseen data.
 We plotted the Net Churn Reduction Curve and selected the cutoff point where the marginal gain of targeting additional users diminished significantly compared to random selection.
 This validated a strategy of targeting the Top 60% of the population, maximizing total churn reduction without wasting resources on users with zero or negative treatment effects.
+
+
+### Test Evaluation and Comparison to Baseline
+To evaluate the model and compare to the baseline using standard metrics as classification report and AUC, we derive the predicted churn labels as follows:
+1. If the member was outreached, we predict the churn probability using **Model Treated**.
+2. If the member was not outreached, we predict the churn probability using **Model Control**.
+
+#### ROC–AUC Comparison
+- **Test Set AUC (Our Model):** 0.6602  
+- **Test Set AUC (Baseline):** 0.4891  
+- **AUC Improvement:** **+0.1711**
+
+---
+
+#### Classification Report — Our Model
+
+| Class     | Precision | Recall | F1-score | Support |
+|-----------|-----------|--------|----------|---------|
+| no_churn  | 0.86      | 0.63   | 0.73     | 7,996   |
+| churn     | 0.29      | 0.61   | 0.39     | 2,004   |
+| **Accuracy** |           |        | **0.62** | 10,000  |
+| **Macro Avg** | 0.58      | 0.62   | 0.56     | 10,000  |
+| **Weighted Avg** | 0.75      | 0.62   | 0.66     | 10,000  |
+
+---
+
+#### Classification Report — Baseline
+
+| Class     | Precision | Recall | F1-score | Support |
+|-----------|-----------|--------|----------|---------|
+| no_churn  | 0.80      | 0.51   | 0.62     | 7,996   |
+| churn     | 0.20      | 0.48   | 0.28     | 2,004   |
+| **Accuracy** |           |        | **0.50** | 10,000  |
+| **Macro Avg** | 0.50      | 0.49   | 0.45     | 10,000  |
+| **Weighted Avg** | 0.68      | 0.50   | 0.55     | 10,000  |
+
+---
+
+#### Summary
+- Our model significantly outperforms the baseline in **ROC–AUC (+0.17)**.
+- It improves **recall for the churn class** (0.61 vs. 0.48), capturing more churners.
+- Overall accuracy increases from **50% → 62%**, indicating meaningful predictive gains.
+
