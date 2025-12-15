@@ -5,8 +5,8 @@ from src.model import get_trained_model
 
 def main():
     # 1. Load Data
-    churn_tr, app_tr, web_tr, claims_tr = load_dataset("./data/train")
-    churn_te, app_te, web_te, claims_te = load_dataset("./data/test", test=True)
+    churn_tr, app_tr, web_tr, claims_tr = load_dataset("./data/train/")
+    churn_te, app_te, web_te, claims_te = load_dataset("./data/test/", test=True)
     
     # 2. Feature Engineering
     df_train, risk_titles = build_features(churn_tr, app_tr, web_tr, claims_tr)
