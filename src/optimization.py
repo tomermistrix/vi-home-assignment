@@ -146,7 +146,7 @@ def determine_optimal_threshold(oof_uplift, y_churn, t):
     plt.grid(True, alpha=0.3)
 
     # plt.show()
-    plt.savefig("./output/optimal_n.png")
+    plt.savefig("../output/optimal_n.png")
     
     return optimal_pct
 
