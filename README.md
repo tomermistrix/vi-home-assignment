@@ -81,6 +81,95 @@ We plotted the Net Churn Reduction Curve and selected the cutoff point where the
 This validated a strategy of targeting the Top 65% of the population, maximizing total churn reduction without wasting resources on users with zero or negative treatment effects.
 
 
+### Analysis of Outreach List and Optimal n:
+#### Top 15 Users to Contact (Highest Uplift)
+
+These are the users with the highest predicted uplift scores — the ones most likely to benefit from outreach.
+
+| User ID | Outreach | Prob. Churn if Ignored | Prob. Churn if Treated | Uplift Score | Actual Churn |
+|---------|----------|-----------------------|-----------------------|--------------|--------------|
+| 9861    | 0        | 0.7096                | 0.4343                | 0.2753       | 0            |
+| 7004    | 1        | 0.6117                | 0.3454                | 0.2664       | 0            |
+| 572     | 0        | 0.6734                | 0.4178                | 0.2556       | 0            |
+| 8755    | 0        | 0.6531                | 0.4033                | 0.2498       | 0            |
+| 846     | 1        | 0.6246                | 0.3749                | 0.2497       | 0            |
+| 4758    | 1        | 0.6239                | 0.3749                | 0.2490       | 0            |
+| 4385    | 0        | 0.6105                | 0.3627                | 0.2478       | 0            |
+| 1892    | 0        | 0.6889                | 0.4412                | 0.2477       | 0            |
+| 6685    | 0        | 0.6607                | 0.4204                | 0.2403       | 0            |
+| 2383    | 0        | 0.6503                | 0.4119                | 0.2384       | 0            |
+| 799     | 0        | 0.6771                | 0.4397                | 0.2374       | 1            |
+| 1487    | 1        | 0.6384                | 0.4011                | 0.2373       | 0            |
+| 7179    | 0        | 0.6384                | 0.4037                | 0.2347       | 0            |
+| 1752    | 0        | 0.6503                | 0.4164                | 0.2340       | 1            |
+| 8577    | 0        | 0.6607                | 0.4273                | 0.2335       | 0            |
+
+**Observation:**  
+
+Among the top 15 users to contact, the **only users who actually churned (user IDs 799 and 1752) were not outreached**. This aligns with expectations: the model correctly identifies high-risk users who benefit from outreach.
+
+---
+
+#### Top 15 Sleeping Dogs (Negative Uplift)
+
+These are users for whom outreach may **increase churn risk**.
+
+| User ID | Outreach | Prob. Churn if Ignored | Prob. Churn if Treated | Uplift Score | Actual Churn |
+|---------|----------|-----------------------|-----------------------|--------------|--------------|
+| 6623    | 1        | 0.4082                | 0.5540                | -0.1458      | 1            |
+| 8619    | 1        | 0.3119                | 0.4578                | -0.1460      | 0            |
+| 5454    | 0        | 0.3378                | 0.4857                | -0.1479      | 0            |
+| 2808    | 1        | 0.3253                | 0.4761                | -0.1507      | 0            |
+| 5259    | 1        | 0.4000                | 0.5540                | -0.1541      | 0            |
+| 8831    | 0        | 0.3402                | 0.4960                | -0.1557      | 0            |
+| 5795    | 0        | 0.3770                | 0.5332                | -0.1562      | 0            |
+| 8702    | 0        | 0.3280                | 0.4867                | -0.1588      | 0            |
+| 1045    | 0        | 0.3860                | 0.5459                | -0.1599      | 0            |
+| 8461    | 1        | 0.3545                | 0.5160                | -0.1615      | 1            |
+| 4773    | 1        | 0.3226                | 0.4857                | -0.1631      | 1            |
+| 8088    | 0        | 0.3437                | 0.5076                | -0.1640      | 0            |
+| 8560    | 1        | 0.3882                | 0.5531                | -0.1649      | 0            |
+| 6815    | 1        | 0.3676                | 0.5332                | -0.1656      | 0            |
+| 1023    | 0        | 0.3150                | 0.4809                | -0.1659      | 0            |
+
+**Observation:**
+
+Among the sleeping dogs, the **users who actually churned (6623, 8461, 4773) were all outreached**, suggesting that outreach to these users could have **adversely impacted churn**, which is consistent with the negative uplift scores.
+
+---
+
+#### Top K Uplift Evaluation
+
+| Top % | n Users | Actual Lift | Control Churn | Treated Churn |
+|-------|---------|------------|---------------|---------------|
+| 10%   | 1,000   | +2.73%     | 20.1%         | 17.4%         |
+| 20%   | 2,000   | +5.76%     | 20.7%         | 14.9%         |
+| 30%   | 3,000   | +3.96%     | 20.9%         | 16.9%         |
+| 40%   | 4,000   | +2.70%     | 21.2%         | 18.5%         |
+| 45%   | 4,500   | +1.88%     | 20.8%         | 18.9%         |
+| 50%   | 5,000   | +1.81%     | 20.9%         | 19.1%         |
+| 55%   | 5,500   | +1.82%     | 21.1%         | 19.3%         |
+| 60%   | 6,000   | +1.39%     | 20.9%         | 19.5%         |
+| 65%   | 6,500   | +1.53%     | 20.8%         | 19.2%         |
+| 70%   | 7,000   | +1.54%     | 20.9%         | 19.3%         |
+| 75%   | 7,500   | +0.94%     | 20.6%         | 19.6%         |
+| 80%   | 8,000   | +0.69%     | 20.3%         | 19.6%         |
+| 90%   | 9,000   | +0.52%     | 20.2%         | 19.7%         |
+| 100%  | 10,000  | +0.48%     | 20.2%         | 19.7%         |
+
+**Observation:**  
+- The **optimal top-K percentage is ~65%**.  
+- After 65%, the **lift stabilizes**, indicating diminishing returns from outreaching additional users.  
+- This supports using the **top 65% of users** for outreach as a practical and effective strategy.
+
+---
+
+#### Summary Insights
+
+1. **High Uplift Users:** Targeting these users is effective; the few actual churners were not contacted, showing the model identifies who truly benefits.  
+2. **Sleeping Dogs:** Outreach to these users may be counterproductive, as evidenced by the churned users being outreached.  
+3. **Top-K Analysis:** Selecting the top 65% of users maximizes lift while avoiding wasted outreach, after which additional outreach gives minimal incremental benefit.
+
 ### Test Evaluation and Comparison to Baseline
 To evaluate the model and compare to the baseline using standard metrics as classification report and AUC, we derive the predicted churn labels as follows:
 1. If the member was outreached, we predict the churn probability using **Model Treated**.
@@ -121,4 +210,3 @@ To evaluate the model and compare to the baseline using standard metrics as clas
 - Our model significantly outperforms the baseline in **ROC–AUC (+0.17)**.
 - It improves **recall for the churn class** (0.61 vs. 0.48), capturing more churners.
 - Overall accuracy increases from **50% → 62%**, indicating meaningful predictive gains.
-
