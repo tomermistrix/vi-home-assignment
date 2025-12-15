@@ -41,7 +41,7 @@ def main():
     outreach = results_top_n.head(final_n).copy()
     outreach['rank'] = range(1, len(outreach)+1)
     
-    outreach.to_csv(f"{PROJECT_ROOT}/output/outreach_list.csv", index=False)
+    outreach.to_csv(f"{OUTPUT_PATH}/outreach_list.csv", index=False)
     print("Success.")
 
 if __name__ == "__main__":
